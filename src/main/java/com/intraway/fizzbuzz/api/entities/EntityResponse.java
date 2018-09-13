@@ -28,7 +28,7 @@ public class EntityResponse implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	@OneToOne/*(cascade = CascadeType.ALL)*/
+	@OneToOne
 	@JoinColumn(name = "request_id")
 	private EntityRequest request;
 	
@@ -41,6 +41,7 @@ public class EntityResponse implements Serializable {
 	private String message;
 	// in this field you can save the list if the answer is ok or the path and the
 	// exception otherwise
+	@Column(columnDefinition="varchar(50000)")
 	private String additionalData;
 	private String code;
 
@@ -86,7 +87,7 @@ public class EntityResponse implements Serializable {
 		this.message = message;
 	}
 
-	@Column(length = 3000)
+	@Column(length = 50000)
 	public String getAdditionalData() {
 		return additionalData;
 	}

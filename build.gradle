@@ -8,8 +8,9 @@ buildscript {
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
-}
 
+}
+ 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
@@ -17,24 +18,10 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'idea'
 apply plugin: 'war'
 
-group = 'com.intraway'
 version = '1.0.0-Final'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
-
-test {
-    useJUnit {
-        systemProperty "testprofile", "unittest"
-    }
-}
- 
-task integrationTest(type: Test) {
-    useJUnit {
-        systemProperty "testprofile", "integrationtest"
-    }
-}
 
 repositories {
 	mavenCentral()
@@ -44,20 +31,22 @@ repositories {
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-rest')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	
-	compile group: 'javax', name: 'javaee-api', version: '8.0'
-	//compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.6'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: '1.5.8.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.0.4.RELEASE'
+	compile group: 'org.springframework.boot', name: 'spring-boot-legacy', version:'1.1.0.RELEASE'
+    
+	compile group: 'mysql', name: 'mysql-connector-java', version:'5.1.44'
+    //compile group: 'commons-dbcp', name: 'commons-dbcp', version:'1.4'
+    //compile group: 'org.apache.commons', name: 'commons-collections4', version:'4.1'
 	//compile group: 'javax.json', name: 'javax.json-api', version: '1.1.2'
-	compile group: 'javax.json.bind', name: 'javax.json.bind-api', version: '1.0'
-	compile group: 'org.glassfish', name: 'javax.json', version: '1.1.2'
-	compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.0.4.RELEASE'
-	compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.12'
+	//compile group: 'javax.json.bind', name: 'javax.json.bind-api', version: '1.0'
+	//compile group: 'org.glassfish', name: 'javax.json', version: '1.1.2'
 	
 	
 	/*TEST Dependencies*/
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
-	testCompile group: 'org.eclipse', name: 'yasson', version: '1.0.1'	
+	//testCompile group: 'org.eclipse', name: 'yasson', version: '1.0.1'	
 	
 }
 
