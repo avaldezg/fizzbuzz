@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.intraway.fizzbuzz.api.dto.ResponseType;
 import com.intraway.fizzbuzz.api.entities.EntityRequest;
 import com.intraway.fizzbuzz.api.entities.EntityResponse;
+import com.intraway.fizzbuzz.api.exceptions.ApplicationException;
 import com.intraway.fizzbuzz.api.exceptions.BadRequestException;
 import com.intraway.fizzbuzz.api.model.FizzBuzz;
 import com.intraway.fizzbuzz.api.repository.RequestRepository;
@@ -33,16 +34,20 @@ public class RestService {
 
 	@GetMapping("/intraway/api/fizzbuzz/{min}/{max}")
 	public Response fizzbuzz(@PathVariable(name = "min", required = true) String min,
-			@PathVariable(name = "max", required = true) String max) {
+			@PathVariable(name = "max", required = true) String max) throws ApplicationException {
 
 		EntityRequest entityRequest = new EntityRequest();
 		entityRequest.setMethod("/intraway/api/fizzbuzz/");
 		entityRequest.setParametes("min=" + min + ", max=" + max);
 		entityRequest.setRequestDate(new Date());
-		requestRepository.save(entityRequest);
-
 		try {
 
+			requestRepository.save(entityRequest);
+			
+		} catch (Exception e) {
+			throw new ApplicationException("ApplicationException: Ha ocurrido un error de sistema. Por favor, reintente mas tarde");
+		}
+		try {
 			if (min == null || min.isEmpty() || max == null || max.isEmpty()) {
 
 				BadResponse badResponse = (BadResponse) FizzBuzzUtils.getBadResponse(min, max);
@@ -56,41 +61,54 @@ public class RestService {
 				return responseOk;
 			}
 
-		} catch (RuntimeException e) {
-			 BadResponse badResponse = (BadResponse) FizzBuzzUtils.getBadResponse(min,
-			 max);
-			 saveBadResponse(entityRequest, badResponse);
-			throw new BadRequestException(badResponse.getStatus(),badResponse.getError(), badResponse.getException(), badResponse.getMessage(), badResponse.getPath());
+		} catch (Exception e) {
+			if (e instanceof ApplicationException) {
+				throw e;
+			}
+			BadResponse badResponse = (BadResponse) FizzBuzzUtils.getBadResponse(min, max);
+			saveBadResponse(entityRequest, badResponse);
 
+			throw new BadRequestException(badResponse.getStatus(), badResponse.getError(), badResponse.getException(),
+					badResponse.getMessage(), badResponse.getPath());
 
 		}
 	}
 
-	private void saveBadResponse(EntityRequest entityRequest, BadResponse badResponse) {
-		EntityResponse entityResponse = new EntityResponse();
-		entityResponse.setTimestamp(badResponse.getTimestamp());
-		entityResponse.setMessage(badResponse.getMessage());
-		entityResponse.setType(ResponseType.BAD_REQUEST);
-		entityResponse.setAdditionalData("Exception=" + badResponse.getException() + "&path=" + badResponse.getPath());
-		entityResponse.setRequest(entityRequest);
-		entityRequest.setResponse(entityResponse);
-		entityResponse.setCode("404");
+	private void saveBadResponse(EntityRequest entityRequest, BadResponse badResponse) throws ApplicationException {
+		try {
+			EntityResponse entityResponse = new EntityResponse();
+			entityResponse.setTimestamp(badResponse.getTimestamp());
+			entityResponse.setMessage(badResponse.getMessage());
+			entityResponse.setType(ResponseType.BAD_REQUEST);
+			entityResponse
+					.setAdditionalData("Exception=" + badResponse.getException() + "&path=" + badResponse.getPath());
+			entityResponse.setRequest(entityRequest);
+			entityRequest.setResponse(entityResponse);
+			entityResponse.setCode("404");
+			responseRepository.save(entityResponse);
+		} catch (Exception e) {
+			throw new ApplicationException("ApplicationException: Ha ocurrido un error de sistema. Por favor, reintente mas tarde");
 
-		responseRepository.save(entityResponse);
+		}
 	}
 
-	private void saveResponseOk(EntityRequest entityRequest, ResponseOk responseOk) {
-		EntityResponse entityResponse = new EntityResponse();
+	private void saveResponseOk(EntityRequest entityRequest, ResponseOk responseOk) throws ApplicationException {
+		try {
+			EntityResponse entityResponse = new EntityResponse();
 
-		entityResponse.setTimestamp(responseOk.getTimestamp());
-		entityResponse.setMessage(responseOk.getDescription());
-		entityResponse.setType(ResponseType.RESPONSE_OK);
-		entityResponse.setAdditionalData(responseOk.getList());
-		entityResponse.setRequest(entityRequest);
-		entityResponse.setCode(responseOk.getCode());
-		entityRequest.setResponse(entityResponse);
+			entityResponse.setTimestamp(responseOk.getTimestamp());
+			entityResponse.setMessage(responseOk.getDescription());
+			entityResponse.setType(ResponseType.RESPONSE_OK);
+			entityResponse.setAdditionalData("list= " + responseOk.getList());
+			entityResponse.setRequest(entityRequest);
+			entityResponse.setCode(responseOk.getCode());
+			entityRequest.setResponse(entityResponse);
 
-		responseRepository.save(entityResponse);
+			responseRepository.save(entityResponse);
+		} catch (Exception e) {
+			throw new ApplicationException("ApplicationException: Ha ocurrido un error de sistema. Por favor, reintente mas tarde");
+
+		}
 	}
 
 }

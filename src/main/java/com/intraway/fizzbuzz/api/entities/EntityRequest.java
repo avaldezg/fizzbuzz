@@ -3,6 +3,7 @@ package com.intraway.fizzbuzz.api.entities;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,7 +25,7 @@ public class EntityRequest implements Serializable {
 	private String parametes;
 	private Date requestDate;
 	
-	@OneToOne(mappedBy = "request")
+	@OneToOne(mappedBy = "request", cascade = CascadeType.ALL)
 	private EntityResponse response;
 
 	public Integer getId() {

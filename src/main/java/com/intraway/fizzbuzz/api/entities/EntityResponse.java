@@ -3,7 +3,6 @@ package com.intraway.fizzbuzz.api.entities;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -29,13 +28,14 @@ public class EntityResponse implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne/*(cascade = CascadeType.ALL)*/
 	@JoinColumn(name = "request_id")
 	private EntityRequest request;
 	
 	private Timestamp timestamp;
 	
 	@Enumerated(EnumType.STRING)
+	@Column(columnDefinition="varchar(20)")
 	private ResponseType type;
 	
 	private String message;

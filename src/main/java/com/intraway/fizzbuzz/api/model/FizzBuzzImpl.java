@@ -28,7 +28,7 @@ public class FizzBuzzImpl implements FizzBuzz, Serializable {
 		}
 		Integer min = Integer.parseInt(minStr);
 		Integer max = Integer.parseInt(maxStr);
-		if (min < max) {
+		if (min <= max) {
 
 			boolean existsMultiplesOfThree = false;
 			boolean existsMultiplesOfFive = false;

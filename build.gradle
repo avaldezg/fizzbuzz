@@ -17,14 +17,24 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'idea'
 apply plugin: 'war'
 
-
-
 group = 'com.intraway'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0-Final'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+
+test {
+    useJUnit {
+        systemProperty "testprofile", "unittest"
+    }
+}
+ 
+task integrationTest(type: Test) {
+    useJUnit {
+        systemProperty "testprofile", "integrationtest"
+    }
+}
 
 repositories {
 	mavenCentral()

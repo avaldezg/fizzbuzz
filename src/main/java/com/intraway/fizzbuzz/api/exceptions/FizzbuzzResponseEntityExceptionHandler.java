@@ -16,13 +16,19 @@ public class FizzbuzzResponseEntityExceptionHandler extends ResponseEntityExcept
 
 	@ExceptionHandler(Exception.class)
 	public final ResponseEntity<BadResponse> handleAllExceptions(Exception ex, WebRequest request) {
-		BadResponse exceptionResponse = new BadResponse(ex.getMessage());
+		BadResponse exceptionResponse = new BadResponse("500","Internal Server Error","com.intraway.fizzbuzz.api.exceptions.applicationexception", "Ha ocurrido un error desconocido","/intraway/api/fizzbuzz/{min}/{max}");
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(BadRequestException.class)
 	public final ResponseEntity<BadResponse> handleNotFoundException(BadRequestException ex, WebRequest request) {
 		BadResponse exceptionResponse = new BadResponse(ex.getStatus(), ex.getError(),ex.getException(),ex.getMessage(),ex.getPath());
+		return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(ApplicationException.class)
+	public final ResponseEntity<BadResponse> handleInternalErrorException(ApplicationException ex, WebRequest request) {
+		BadResponse exceptionResponse = new BadResponse("500","Internal Server Error","com.intraway.fizzbuzz.api.exceptions.applicationexception", ex.getMessage(),"/intraway/api/fizzbuzz/{min}/{max}");
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
 	}
 
