@@ -1,4 +1,4 @@
-package com.intraway.fizzbuzz;
+package com.intraway.fizzbuzz.junit;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,54 +11,59 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.intraway.fizzbuzz.api.FizzBuzzApplication;
 import com.intraway.fizzbuzz.api.model.FizzBuzz;
+import com.intraway.fizzbuzz.api.service.responses.BadResponse;
 import com.intraway.fizzbuzz.api.service.responses.Response;
+import com.intraway.fizzbuzz.api.service.responses.ResponseOk;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes= {FizzBuzzApplication.class})
-public class FizzBuzzApplicationTests {
-	private static Logger logger = LoggerFactory.getLogger(FizzBuzzApplicationTests.class);
+@SpringBootTest(classes = FizzBuzzApplication.class)
+public class FizzBuzzApplicationJUnitTests {
+	private static Logger logger = LoggerFactory.getLogger(FizzBuzzApplicationJUnitTests.class);
 
 	@Autowired
 	private FizzBuzz fizzbull;
 
 	@Test
-	public void testOne() {
+	public void fizzbuzz_test_range_one_three() {
 		logger.info("FIRST TEST--- range (1,3)") ;
-		Response response = fizzbull.rangeList("1", "3");
+		ResponseOk response = (ResponseOk)fizzbull.rangeList("1", "3");
 		logger.info(response.toString());
-		Assert.assertTrue("se encontraron multiplos de 3", true);
+		String message="se encontraron multiplos de 3";
+		Assert.assertTrue(message, response.getDescription().equalsIgnoreCase(message));
 
 	}
 
 	@Test
-	public void testTwo() {
+	public void fizzbuzz_test_range_one_fifteen() {
 		logger.info("SECOND TEST--- range (1,15)");
-		Response response = fizzbull.rangeList("1", "15");
+		ResponseOk response = (ResponseOk)fizzbull.rangeList("1", "15");
+		String message ="se encontraron multiplos de 3 y de 5";
 		logger.info(response.toString());
-		Assert.assertTrue("se encontraron multiplos de 3 y de 5", true);
+		Assert.assertTrue(message, response.getDescription().equalsIgnoreCase(message));
 
 	}
 	
 	@Test
-	public void testThree(){
+	public void fizzbuzz_test_range_four_five(){
 		logger.info("THREE TEST--- range (4,5)");
-		Response response = fizzbull.rangeList("4", "5");
+		ResponseOk response = (ResponseOk)fizzbull.rangeList("4", "5");
 		logger.info(response.toString());
-		Assert.assertTrue("se encontraron multiplos de 5", true);
+		String message = "se encontraron multiplos de 5";
+		Assert.assertTrue(message, response.getDescription().equalsIgnoreCase(message));
 
 	}
 
 	@Test
-	public void badRange() {
+	public void fizzbuzz_test_bad_range() {
 		logger.info("BAD RANGE");
-		Response response = fizzbull.rangeList("5", "-2");
+		BadResponse response = (BadResponse)fizzbull.rangeList("5", "-2");
 		logger.info(response.toString());
 		Assert.assertFalse("parametros enviados son incorrectos", false);
 
 	}
 	
 	@Test
-	public void badRequest(){
+	public void fizzbuzz_test_bad_request_null_null(){
 		logger.info("BAD REQUEST");
 		Response response = fizzbull.rangeList(null,null);
 		logger.info(response.toString());
@@ -67,7 +72,7 @@ public class FizzBuzzApplicationTests {
 	}
 	
 	@Test
-	public void badRequestTwo() {
+	public void fizzbuzz_test_bad_request_null_four() {
 		logger.info("BAD REQUEST TWO");
 		Response response = fizzbull.rangeList(null,"4");
 		logger.info(response.toString());
@@ -76,7 +81,7 @@ public class FizzBuzzApplicationTests {
 	}
 	
 	@Test
-	public void badRequestThree(){
+	public void fizzbuzz_test_bad_request_zero_null(){
 		logger.info("BAD REQUEST THREE");
 		Response response = fizzbull.rangeList("0",null);
 		logger.info(response.toString());
